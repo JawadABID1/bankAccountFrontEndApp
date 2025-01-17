@@ -23,7 +23,7 @@ const App: React.FC = () => {
                     </Container>
 
                     {/* Footer */}
-                    <Footer/>
+                    {/*<Footer/>*/}
                 </div>
             </Provider>
     );

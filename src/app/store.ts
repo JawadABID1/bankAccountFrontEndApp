@@ -4,6 +4,7 @@ import userReducer from './slices/userSlice';
 import bankAccountReducer from './slices/bankAccountSlice';
 import customerReducer from './slices/customerSlice'; // If you have a customer slice
 // import { RootState } from './redux.d'; // You may need to define this type
+import {RootState} from "../types/redux";
 
 // Create the store and add reducers
 const store = configureStore({

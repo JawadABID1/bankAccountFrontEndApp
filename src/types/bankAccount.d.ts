@@ -1,17 +1,16 @@
 // bankAccount.d.ts
 export interface BankAccount {
-    id: string;
-    accountNumber: string;
+    accountId: string;
     accountType: string;
     balance: number;
     currency: string;
     customerId: string; // Assuming each account is linked to a customer
-    createdAt: string;
-    updatedAt: string;
+    createDate: string;
+    updatedDate: string;
 }
 
 export interface BankAccountCreateRequest {
-    accountNumber: string;
+    id: string;
     accountType: string;
     balance: number;
     currency: string;
@@ -19,7 +18,6 @@ export interface BankAccountCreateRequest {
 }
 
 export interface BankAccountUpdateRequest {
-    accountNumber?: string;
     accountType?: string;
     balance?: number;
     currency?: string;

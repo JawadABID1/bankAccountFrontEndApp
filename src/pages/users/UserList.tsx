@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';  // For Redux actions and state
 import { Link } from 'react-router-dom';  // For routing links
-import { RootState } from '../app/store';  // RootState for accessing Redux state
+// import { RootState } from '../app/store';  // RootState for accessing Redux state
+import {RootState} from "../../app/store.ts";
 import { fetchUsers, deleteUser } from '../app/slices/userSlice';  // Redux actions for fetching and deleting users
 // import {fetchUserProfile} from "../../app/slices/authSlice.ts";
 import { Container, Row, Col, Table, Button, Spinner, Alert } from 'react-bootstrap';  // Bootstrap components

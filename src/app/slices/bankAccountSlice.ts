@@ -6,11 +6,12 @@ import {
     updateBankAccount,
     deleteBankAccount as deleteBankAccountApi,
 } from '../../api/bankAccountApi';
+import {BankAccountState} from "../../types/redux";
 
-const initialState = {
+const initialState : BankAccountState = {
     bankAccounts: [],
     selectedAccount: null,
-    loading: false,
+    status: 'idle',
     error: null,
 };
 
@@ -56,11 +57,11 @@ export const createNewBankAccount = createAsyncThunk(
 export const updateExistingBankAccount = createAsyncThunk(
     'bankAccounts/update',
     async (
-        { id, accountData }: { id: string; accountData: { name: string; balance: number } },
+        { id, data }: { id: string; data: { balance: number, currency: string, accountType: string, customerId: number } },
         { rejectWithValue }
     ) => {
         try {
-            return await updateBankAccount(id, accountData);
+            return await updateBankAccount(id, data);
         } catch (error: any) {
             return rejectWithValue(error.response?.data || 'Error updating bank account');
         }
@@ -89,53 +90,53 @@ const bankAccountSlice = createSlice({
         builder
             // Fetch all bank accounts
             .addCase(getAllBankAccounts.pending, (state) => {
-                state.loading = true;
+                state.status = 'pending';
                 state.error = null;
             })
             .addCase(getAllBankAccounts.fulfilled, (state, action) => {
-                state.loading = false;
+                state.status = 'succeeded';
                 state.bankAccounts = action.payload;
             })
             .addCase(getAllBankAccounts.rejected, (state, action) => {
-                state.loading = false;
+                state.status = 'failed';
                 state.error = action.payload;
             })
 
             // Fetch a single bank account by ID
             .addCase(getBankAccountById.pending, (state) => {
-                state.loading = true;
+                state.status = 'pending';
                 state.error = null;
             })
             .addCase(getBankAccountById.fulfilled, (state, action) => {
-                state.loading = false;
+                state.status = 'succeeded';
                 state.selectedAccount = action.payload;
             })
             .addCase(getBankAccountById.rejected, (state, action) => {
-                state.loading = false;
+                state.status = 'failed';
                 state.error = action.payload;
             })
 
             // Create a new bank account
             .addCase(createNewBankAccount.pending, (state) => {
-                state.loading = true;
+                state.status = 'pending';
                 state.error = null;
             })
             .addCase(createNewBankAccount.fulfilled, (state, action) => {
-                state.loading = false;
+                state.status = 'succeeded';
                 state.bankAccounts.push(action.payload);
             })
             .addCase(createNewBankAccount.rejected, (state, action) => {
-                state.loading = false;
+                state.status = 'failed';
                 state.error = action.payload;
             })
 
             // Update an existing bank account
             .addCase(updateExistingBankAccount.pending, (state) => {
-                state.loading = true;
+                state.status = 'pending';
                 state.error = null;
             })
             .addCase(updateExistingBankAccount.fulfilled, (state, action) => {
-                state.loading = false;
+                state.status = 'succeeded';
                 const index = state.bankAccounts.findIndex(
                     (account) => account.id === action.payload.id
                 );
@@ -144,23 +145,23 @@ const bankAccountSlice = createSlice({
                 }
             })
             .addCase(updateExistingBankAccount.rejected, (state, action) => {
-                state.loading = false;
+                state.status = 'failed';
                 state.error = action.payload;
             })
 
             // Delete a bank account
             .addCase(deleteBankAccount.pending, (state) => {
-                state.loading = true;
+                state.status = 'pending';
                 state.error = null;
             })
             .addCase(deleteBankAccount.fulfilled, (state, action) => {
-                state.loading = false;
+                state.status = 'succeeded';
                 state.bankAccounts = state.bankAccounts.filter(
                     (account) => account.id !== action.payload
                 );
             })
             .addCase(deleteBankAccount.rejected, (state, action) => {
-                state.loading = false;
+                state.status = 'failed';
                 state.error = action.payload;
             });
     },

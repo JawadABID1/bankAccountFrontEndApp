@@ -132,8 +132,8 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';  // For Redux actions and state
 import { useNavigate } from 'react-router-dom';  // For navigation after account creation (updated)
-import { createNewBankAccount } from '../app/slices/bankAccountSlice';  // Redux action for creating bank account
-import { RootState } from '../app/store';  // RootState for accessing Redux state
+import { createNewBankAccount } from '../../app/slices/bankAccountSlice.ts';  // Redux action for creating bank account
+import { RootState } from '../../app/store.ts';  // RootState for accessing Redux state
 import { Container, Row, Col, Form, Button, Spinner, Alert } from 'react-bootstrap';  // Bootstrap components
 
 const CreateAccountPage: React.FC = () => {

@@ -4,26 +4,18 @@ export interface Customer {
     firstName: string;
     lastName: string;
     email: string;
-    phone: string;
-    address: string;
-    createdAt: string;
-    updatedAt: string;
 }
 
 export interface CustomerCreateRequest {
     firstName: string;
     lastName: string;
     email: string;
-    phone: string;
-    address: string;
 }
 
 export interface CustomerUpdateRequest {
     firstName?: string;
     lastName?: string;
     email?: string;
-    phone?: string;
-    address?: string;
 }
 
 export interface CustomerResponse {

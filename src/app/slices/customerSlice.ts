@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import {createAsyncThunk, createSelector, createSlice} from '@reduxjs/toolkit';
 import {
     fetchCustomers,
     fetchCustomerById,
@@ -6,11 +6,13 @@ import {
     updateCustomer,
     deleteCustomer,
 } from '../../api/customerApi';
+import {CustomerState, RootState} from "../../types/redux";
+import {Customer, CustomerCreateRequest, CustomerUpdateRequest} from "../../types/customer";
 
-const initialState = {
+const initialState : CustomerState = {
     customers: [],
     selectedCustomer: null,
-    loading: false,
+    status: 'idle',
     error: null,
 };
 
@@ -39,7 +41,7 @@ export const getCustomerById = createAsyncThunk(
 
 export const addCustomer = createAsyncThunk(
     'customers/create',
-    async (data: any, { rejectWithValue }) => {
+    async (data: CustomerCreateRequest, { rejectWithValue }) => {
         try {
             return await createCustomer(data);
         } catch (error: any) {
@@ -50,7 +52,8 @@ export const addCustomer = createAsyncThunk(
 
 export const modifyCustomer = createAsyncThunk(
     'customers/update',
-    async ({ id, data }: { id: string; data: any }, { rejectWithValue }) => {
+    async ({ id, data }: { id: string; data: CustomerUpdateRequest }, { rejectWithValue }) => {
+        console.log("modifyCustomerData and Id: " + JSON.stringify(data)+" and " + id);
         try {
             return await updateCustomer(id, data);
         } catch (error: any) {
@@ -76,26 +79,26 @@ const customerSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder
-            .addCase(getAllCustomers.pending, (state) => {
-                state.loading = true;
+            .addCase(getAllCustomers.pending, (state, action) => {
+                state.status = 'pending';
             })
             .addCase(getAllCustomers.fulfilled, (state, action) => {
-                state.loading = false;
+                state.status = 'succeeded';
                 state.customers = action.payload;
             })
             .addCase(getAllCustomers.rejected, (state, action) => {
-                state.loading = false;
+                state.status = "failed";
                 state.error = action.payload;
             })
             .addCase(getCustomerById.pending, (state) => {
-                state.loading = true;
+                state.status = "pending";
             })
             .addCase(getCustomerById.fulfilled, (state, action) => {
-                state.loading = false;
+                state.status = "succeeded";
                 state.selectedCustomer = action.payload;
             })
             .addCase(getCustomerById.rejected, (state, action) => {
-                state.loading = false;
+                state.status = "failed";
                 state.error = action.payload;
             })
             .addCase(addCustomer.fulfilled, (state, action) => {
@@ -112,5 +115,30 @@ const customerSlice = createSlice({
             });
     },
 });
+
+// // Selector to get all customers
+// export const selectAllCustomer = (state: RootState) => state.customer.customers;
+//
+//
+// // Memoized selector to get customer full name by Id
+// export const getCustomerFullNameById = createSelector(
+//     [selectAllCustomer, (_, id: string) => id],
+//     (customers, id) => {
+//         const customer = customers.find((customer) => customer.id === id);
+//         return customer ? `${customer.firstName} ${customer.lastName}` : 'Unknown Customer';
+//     }
+// );
+//
+//
+//
+// // Memoized selector for dropdown options (ID and FullName
+// export const selectCustomerOptions = createSelector(
+//     [selectAllCustomer], (customers)=>{
+//         customers.map((customer)=>({
+//             id: customer.id,
+//             fullName: `${customer.firstName} ${customer.lastName}`
+//         }))
+//     }
+// )
 
 export default customerSlice.reducer;

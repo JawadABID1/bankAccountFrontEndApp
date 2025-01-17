@@ -21,7 +21,9 @@ export const createUser = async (data: any) => {
 // Update an existing user
 export const updateUser = async (id: string, data: any) => {
     const response = await axiosInstance.put(`/users/${id}`, data);
+    // return response.data;
     return response.data;
+
 };
 
 // Delete a user

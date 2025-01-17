@@ -41,7 +41,7 @@ const HomePage: React.FC = () => {
                             <Card.Text>
                                 View and manage all bank accounts associated with your organization.
                             </Card.Text>
-                            <Link to="/bank-accounts">
+                            <Link to="/accounts">
                                 <Button variant="outline-primary">Manage Bank Accounts</Button>
                             </Link>
                         </Card.Body>

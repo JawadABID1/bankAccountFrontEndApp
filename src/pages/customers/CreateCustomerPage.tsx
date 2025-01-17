@@ -120,9 +120,10 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';  // For Redux actions and state
 import { useNavigate } from 'react-router-dom';  // For navigation after customer creation (updated)
-import { addCustomer } from '../app/slices/customerSlice';  // Redux action for creating a customer
-import { RootState } from '../app/store';  // RootState for accessing Redux state
-import { Container, Row, Col, Form, Button, Spinner, Alert } from 'react-bootstrap';  // Bootstrap components
+import { addCustomer } from '../../app/slices/customerSlice.ts';  // Redux action for creating a customer
+import { RootState } from '../../app/store.ts';  // RootState for accessing Redux state
+import { Container, Row, Col, Form, Button, Spinner, Alert } from 'react-bootstrap';
+import {CustomerCreateRequest} from "../../types/customer";  // Bootstrap components
 
 const CreateCustomerPage: React.FC = () => {
     const dispatch = useDispatch();
@@ -133,21 +134,19 @@ const CreateCustomerPage: React.FC = () => {
     const error = useSelector((state: RootState) => state.customer.error);
 
     // Local state for form fields
-    const [name, setName] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
-    const [phone, setPhone] = useState('');
-    const [address, setAddress] = useState('');
 
     // Handle form submission
     const handleSubmit = (event: React.FormEvent) => {
         event.preventDefault();
 
         // Dispatch the action to create a new customer
-        const newCustomer = {
-            name,
+        const newCustomer : CustomerCreateRequest= {
+            firstName,
+            lastName,
             email,
-            phone,
-            address,
         };
 
         dispatch(addCustomer(newCustomer)).then((action) => {
@@ -178,13 +177,25 @@ const CreateCustomerPage: React.FC = () => {
                     {/* Customer creation form */}
                     {status !== 'loading' && (
                         <Form onSubmit={handleSubmit}>
-                            <Form.Group controlId="name" className="mb-3">
-                                <Form.Label>Name</Form.Label>
+                            <Form.Group controlId="firstName" className="mb-3">
+                                <Form.Label>First name</Form.Label>
                                 <Form.Control
                                     type="text"
-                                    placeholder="Enter customer name"
-                                    value={name}
-                                    onChange={(e) => setName(e.target.value)}
+                                    placeholder="Enter customer first name"
+                                    value={firstName}
+                                    onChange={(e) => setFirstName(e.target.value)}
+                                    required
+                                />
+                            </Form.Group>
+
+
+                            <Form.Group controlId="lastName" className="mb-3">
+                                <Form.Label>Last name</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    placeholder="Enter customer first name"
+                                    value={lastName}
+                                    onChange={(e) => setLastName(e.target.value)}
                                     required
                                 />
                             </Form.Group>
@@ -199,29 +210,6 @@ const CreateCustomerPage: React.FC = () => {
                                     required
                                 />
                             </Form.Group>
-
-                            <Form.Group controlId="phone" className="mb-3">
-                                <Form.Label>Phone</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    placeholder="Enter customer phone number"
-                                    value={phone}
-                                    onChange={(e) => setPhone(e.target.value)}
-                                    required
-                                />
-                            </Form.Group>
-
-                            <Form.Group controlId="address" className="mb-3">
-                                <Form.Label>Address</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    placeholder="Enter customer address"
-                                    value={address}
-                                    onChange={(e) => setAddress(e.target.value)}
-                                    required
-                                />
-                            </Form.Group>
-
                             <Button variant="primary" type="submit" className="w-100">
                                 Create Customer
                             </Button>

@@ -1,10 +1,10 @@
 import React from 'react';
 
 interface Customer {
-    name: string;
+    id: number;
+    firstName: string;
+    lastName: string;
     email: string;
-    phone: string;
-    address: string;
     avatarUrl: string;
 }
 
@@ -20,7 +20,7 @@ const CustomerCard: React.FC<CustomerCardProps> = ({ customer }) => {
                 <div className="col-md-4">
                     <img
                         src={customer.avatarUrl}
-                        alt={customer.name}
+                        alt={customer.firstName}
                         className="card-img"
                         style={{ objectFit: 'cover', height: '100%' }}
                     />
@@ -29,15 +29,15 @@ const CustomerCard: React.FC<CustomerCardProps> = ({ customer }) => {
                 {/* Customer Info Section */}
                 <div className="col-md-8">
                     <div className="card-body">
-                        <h5 className="card-title">{customer.name}</h5>
+                        <h5 className="card-title">{customer.firstName + " " + customer.lastName}</h5>
+                        <p className="card-text">
+                            <strong>Phone: </strong>{customer.firstName}
+                        </p>
+                        <p className="card-text">
+                            <strong>Address: </strong>{customer.lastName}
+                        </p>
                         <p className="card-text">
                             <strong>Email: </strong>{customer.email}
-                        </p>
-                        <p className="card-text">
-                            <strong>Phone: </strong>{customer.phone}
-                        </p>
-                        <p className="card-text">
-                            <strong>Address: </strong>{customer.address}
                         </p>
                         <button className="btn btn-primary">View Details</button>
                     </div>

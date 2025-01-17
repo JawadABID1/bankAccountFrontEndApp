@@ -123,8 +123,8 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';  // For Redux actions and state
 import { useNavigate } from 'react-router-dom';  // For navigation after user creation (updated)
-import { addUser } from '../app/slices/userSlice';  // Redux action for creating a user
-import { RootState } from '../app/store';  // RootState for accessing Redux state
+import { addUser } from '../../app/slices/userSlice.ts';  // Redux action for creating a user
+import { RootState } from '../../app/store.ts';  // RootState for accessing Redux state
 import { Container, Row, Col, Form, Button, Spinner, Alert } from 'react-bootstrap';  // Bootstrap components
 
 const CreateUserPage: React.FC = () => {

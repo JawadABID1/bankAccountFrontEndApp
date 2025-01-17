@@ -50,9 +50,9 @@ export const addUser = createAsyncThunk(
 
 export const setUser = createAsyncThunk(
     'users/update',
-    async ({ id, data }: { id: string; data: any }, { rejectWithValue }) => {
+    async ({ email, password }: { email: string; password: string }, { rejectWithValue }) => {
         try {
-            return await updateUser(id, data);
+            return await updateUser(email, password);
         } catch (error: any) {
             return rejectWithValue(error.response.data);
         }

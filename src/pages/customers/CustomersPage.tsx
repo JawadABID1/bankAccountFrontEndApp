@@ -1,20 +1,32 @@
 import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';  // For Redux actions and state
-import { getAllCustomers } from '../app/slices/customerSlice';  // Redux action for fetching customers
-import { RootState } from '../app/store';  // RootState for accessing Redux state
-import { Container, Row, Col, Table, Spinner, Alert, Button } from 'react-bootstrap';  // Bootstrap components
-import { Link } from 'react-router-dom';  // For navigation links
+import { useAppDispatch, useAppSelector } from "../../app/hooks.ts";
+import { getAllCustomers, removeCustomer } from '../../app/slices/customerSlice.ts';
+import { RootState } from "../../app/store.ts";
+import { Container, Row, Col, Table, Spinner, Alert, Button } from 'react-bootstrap';
+import { Link, useNavigate } from 'react-router-dom';
 
 const CustomersPage: React.FC = () => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
+    const navigate = useNavigate();
 
-    // Redux state for customer data, loading, and error
-    const { customers, status, error } = useSelector((state: RootState) => state.customer);
+    const { customers, status, error } = useAppSelector((state: RootState) => state.customer);
 
     // Fetch customers when the component mounts
     useEffect(() => {
         dispatch(getAllCustomers());
-    }, [dispatch]);
+    }, [dispatch]); // Only fetch customers once when the component mounts
+
+
+    const deleteCustomer = (id: string) => {
+        dispatch(removeCustomer(id))
+            .then(() => {
+                dispatch(getAllCustomers());
+            })
+            .catch((err) => {
+                console.error('Failed to delete customer:', err.message);
+                alert('Error deleting customer. Please try again.');
+            });
+    };
 
     return (
         <Container>
@@ -38,24 +50,31 @@ const CustomersPage: React.FC = () => {
                         <Table striped bordered hover responsive>
                             <thead>
                             <tr>
-                                <th>Name</th>
+                                <th>ID</th>
+                                <th>First Name</th>
+                                <th>Last Name</th>
                                 <th>Email</th>
-                                <th>Phone</th>
-                                <th>Actions</th>
                             </tr>
                             </thead>
                             <tbody>
                             {customers.map((customer) => (
                                 <tr key={customer.id}>
-                                    <td>{customer.name}</td>
+                                    <td>{customer.id}</td>
+                                    <td>{customer.firstName}</td>
+                                    <td>{customer.lastName}</td>
                                     <td>{customer.email}</td>
-                                    <td>{customer.phone}</td>
                                     <td>
                                         <Link to={`/customers/${customer.id}`}>
-                                            <Button variant="info" size="sm">
-                                                View
-                                            </Button>
+                                            <i className="bi bi-eye text-primary"></i>
                                         </Link>
+                                    </td>
+                                    <td>
+                                        <Link to={`/customers/edit/${customer.id}`}>
+                                            <i className="bi bi-pencil-square text-warning"></i>
+                                        </Link>
+                                    </td>
+                                    <td>
+                                            <i onClick={()=>deleteCustomer(customer.id)} className="bi bi-trash text-danger"></i>
                                     </td>
                                 </tr>
                             ))}
@@ -69,7 +88,7 @@ const CustomersPage: React.FC = () => {
                     )}
 
                     {/* Link to create a new customer */}
-                    <Link to="/create-customer">
+                    <Link to="/customers/create">
                         <Button variant="primary" className="mt-3">
                             Create New Customer
                         </Button>

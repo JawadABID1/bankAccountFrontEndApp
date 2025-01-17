@@ -23,6 +23,8 @@ const LoginForm: React.FC = () => {
 
         // Example login logic (replace with your API call)
         const user = { name: 'John Doe', email };
+        // setEmail("");
+        // const user = { name: 'Jawad ABID', email };
 
         // Dispatch the login action (you can replace this with your actual authentication logic)
         dispatch(setUser(user));

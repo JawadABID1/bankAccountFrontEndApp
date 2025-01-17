@@ -12,7 +12,7 @@ interface AuthState {
 
 // Initial state for auth
 const initialState: AuthState = {
-    isAuthenticated: false,
+    isAuthenticated: true,
     user: null,
     token: localStorage.getItem('token') || null, // Persist token in localStorage
     loading: false,

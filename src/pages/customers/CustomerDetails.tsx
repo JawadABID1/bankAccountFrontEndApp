@@ -1,22 +1,35 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';  // For Redux actions and state
-import { useParams, Link } from 'react-router-dom';  // For routing and params
+import {useParams, Link, useNavigate} from 'react-router-dom';  // For routing and params
 import { RootState } from '../app/store';
-import {getCustomerById} from "../../app/slices/customerSlice.ts";
+import {getCustomerById, removeCustomer} from "../../app/slices/customerSlice.ts";
 import { Container, Row, Col, Button, Spinner, Card } from 'react-bootstrap';  // Bootstrap components
 
 const CustomerDetails: React.FC = () => {
     const { id } = useParams<{ id: string }>();  // Get the customer ID from the URL params
     const dispatch = useDispatch();
-    const customer = useSelector((state: RootState) => state.customer.customer);
+    const customer = useSelector((state: RootState) => state.customer.selectedCustomer);
+    console.log("customer: ", customer);
     const status = useSelector((state: RootState) => state.customer.status);
     const error = useSelector((state: RootState) => state.customer.error);
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (id) {
             dispatch(getCustomerById(id));  // Fetch the customer details by ID
         }
     }, [dispatch, id]);
+
+    const deleteCustomer = () => {
+        dispatch(removeCustomer(id))
+            .then(() => {
+                navigate('/customers'); // Redirect to the customers list on success
+            })
+            .catch((err) => {
+                console.error('Failed to delete customer:', err.message);
+                alert('Error deleting customer. Please try again.');
+            });
+    };
 
     return (
         <Container>
@@ -33,33 +46,36 @@ const CustomerDetails: React.FC = () => {
                     {status === 'succeeded' && customer && (
                         <Card>
                             <Card.Body>
-                                <Card.Title>{customer.name}</Card.Title>
+                                <Card.Title>{customer.firstName + " " + customer.lastName}</Card.Title>
+                                <Card.Text>
+                                    <strong>First name:</strong> {customer.firstName}
+                                </Card.Text>
+                                <Card.Text>
+                                    <strong>Last name:</strong> {customer.lastName}
+                                </Card.Text>
                                 <Card.Text>
                                     <strong>Email:</strong> {customer.email}
                                 </Card.Text>
-                                <Card.Text>
-                                    <strong>Phone:</strong> {customer.phone}
-                                </Card.Text>
-                                <Card.Text>
-                                    <strong>Address:</strong> {customer.address}
-                                </Card.Text>
-                                <Card.Text>
-                                    <strong>Status:</strong> {customer.status}
-                                </Card.Text>
                                 <div className="d-flex justify-content-end">
-                                    <Link to={`/customers/edit/${customer.id}`}>
+                                    <Link className='m-2' to={`/customers/edit/${customer.id}`}>
                                         <Button variant="warning" size="sm" className="mr-2">
-                                            Edit
+                                            <i className="bi bi-pencil-square"></i>
                                         </Button>
                                     </Link>
-                                    <Button variant="danger" size="sm">
-                                        Delete
+                                    {/*<Link className='m-2' to={`/customers/edit/${customer.id}`}>*/}
+                                    <Button onClick={deleteCustomer} className='m-2' variant="danger" size="sm">
+                                        <i className="bi bi-trash"></i>
                                     </Button>
+                                    {/*</Link>*/}
                                 </div>
                             </Card.Body>
                         </Card>
                     )}
                     {status === 'succeeded' && !customer && <p>Customer not found.</p>}
+
+                    <Link to={'/customers'}>
+                        <Button className="ml-auto" variant="primary">Back to List </Button>
+                    </Link>
                 </Col>
             </Row>
         </Container>

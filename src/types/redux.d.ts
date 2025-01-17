@@ -25,10 +25,12 @@ export interface AuthState {
 }
 
 // Customer slice state
-export interface CustomerState {
+export interface CustomerState{
     customers: Customer[];
-    loading: boolean;
+    // loading: boolean;
+    status: 'idle' | 'pending' | 'succeeded' | 'failed';
     error: string | null;
+    selectedCustomer: unknown | null;
 }
 
 // User slice state
@@ -40,9 +42,10 @@ export interface UserState {
 
 // Bank Account slice state
 export interface BankAccountState {
-    accounts: BankAccount[];
-    loading: boolean;
+    bankAccounts: BankAccount[];
+    status: 'idle' | 'pending' | 'succeeded' | 'failed';
     error: string | null;
+    selectedAccount: unknown | null;
 }
 
 // Actions types (for TypeScript safety)
