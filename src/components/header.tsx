@@ -21,7 +21,13 @@ const Header: React.FC = () => {
                             </Link>
                         </li>
                         <li className="nav-item">
-                            <Link to="/bank-accounts" className="nav-link text-white">
+                            <Link to="/accounts" className="nav-link text-white">
+                                Bank Accounts
+                            </Link>
+                        </li>
+
+                        <li className="nav-item">
+                            <Link to="/customers" className="nav-link text-white">
                                 Bank Accounts
                             </Link>
                         </li>

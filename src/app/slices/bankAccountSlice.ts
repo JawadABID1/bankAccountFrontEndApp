@@ -1,12 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import {
-    fetchBankAccounts,
-    fetchBankAccountById,
-    createBankAccount,
-    updateBankAccount,
-    deleteBankAccount as deleteBankAccountApi,
-} from '../../api/bankAccountApi';
-import {BankAccountState} from "../../types/redux";
+import {BankAccountCreateRequest, BankAccountState, BankAccountUpdateRequest} from "../../types/bankAccount";
+import bankAccountApi from "../../api/bankAccountApi.ts";
 
 const initialState : BankAccountState = {
     bankAccounts: [],
@@ -14,6 +8,8 @@ const initialState : BankAccountState = {
     status: 'idle',
     error: null,
 };
+// Helper for error handling
+const handleError = (error: any) => error.response?.data || error.message || 'An unexpected error occurred.';
 
 // Thunks
 
@@ -22,9 +18,9 @@ export const getAllBankAccounts = createAsyncThunk(
     'bankAccounts/fetchAll',
     async (_, { rejectWithValue }) => {
         try {
-            return await fetchBankAccounts();
+            return await bankAccountApi.fetchBankAccounts();
         } catch (error: any) {
-            return rejectWithValue(error.response?.data || 'Error fetching bank accounts');
+            return rejectWithValue(handleError(error));
         }
     }
 );
@@ -34,9 +30,9 @@ export const getBankAccountById = createAsyncThunk(
     'bankAccounts/fetchById',
     async (id: string, { rejectWithValue }) => {
         try {
-            return await fetchBankAccountById(id);
+            return await bankAccountApi.fetchBankAccountById(id);
         } catch (error: any) {
-            return rejectWithValue(error.response?.data || 'Error fetching bank account by ID');
+            return rejectWithValue(handleError(error));
         }
     }
 );
@@ -44,11 +40,11 @@ export const getBankAccountById = createAsyncThunk(
 // Create a new bank account
 export const createNewBankAccount = createAsyncThunk(
     'bankAccounts/create',
-    async (accountData: { name: string; balance: number }, { rejectWithValue }) => {
+    async (data: BankAccountCreateRequest, { rejectWithValue }) => {
         try {
-            return await createBankAccount(accountData);
+            return await bankAccountApi.createBankAccount(data);
         } catch (error: any) {
-            return rejectWithValue(error.response?.data || 'Error creating bank account');
+            return rejectWithValue(handleError(error));
         }
     }
 );
@@ -57,13 +53,13 @@ export const createNewBankAccount = createAsyncThunk(
 export const updateExistingBankAccount = createAsyncThunk(
     'bankAccounts/update',
     async (
-        { id, data }: { id: string; data: { balance: number, currency: string, accountType: string, customerId: number } },
+        { id, data }: { id: string; data: BankAccountUpdateRequest },
         { rejectWithValue }
     ) => {
         try {
-            return await updateBankAccount(id, data);
+            return await bankAccountApi.updateBankAccount(id, data);
         } catch (error: any) {
-            return rejectWithValue(error.response?.data || 'Error updating bank account');
+            return rejectWithValue(handleError(error));
         }
     }
 );
@@ -73,10 +69,10 @@ export const deleteBankAccount = createAsyncThunk(
     'bankAccounts/delete',
     async (id: string, { rejectWithValue }) => {
         try {
-            await deleteBankAccountApi(id);
+            await bankAccountApi.deleteBankAccount(id);
             return id; // Return the ID of the deleted account
         } catch (error: any) {
-            return rejectWithValue(error.response?.data || 'Error deleting bank account');
+            return rejectWithValue(handleError(error));
         }
     }
 );
@@ -95,7 +91,7 @@ const bankAccountSlice = createSlice({
             })
             .addCase(getAllBankAccounts.fulfilled, (state, action) => {
                 state.status = 'succeeded';
-                state.bankAccounts = action.payload;
+                state.bankAccounts = action.payload.data;
             })
             .addCase(getAllBankAccounts.rejected, (state, action) => {
                 state.status = 'failed';
@@ -109,7 +105,7 @@ const bankAccountSlice = createSlice({
             })
             .addCase(getBankAccountById.fulfilled, (state, action) => {
                 state.status = 'succeeded';
-                state.selectedAccount = action.payload;
+                state.selectedAccount = action.payload.data;
             })
             .addCase(getBankAccountById.rejected, (state, action) => {
                 state.status = 'failed';
@@ -123,7 +119,7 @@ const bankAccountSlice = createSlice({
             })
             .addCase(createNewBankAccount.fulfilled, (state, action) => {
                 state.status = 'succeeded';
-                state.bankAccounts.push(action.payload);
+                state.bankAccounts.push(action.payload.data);
             })
             .addCase(createNewBankAccount.rejected, (state, action) => {
                 state.status = 'failed';
@@ -141,7 +137,7 @@ const bankAccountSlice = createSlice({
                     (account) => account.id === action.payload.id
                 );
                 if (index !== -1) {
-                    state.bankAccounts[index] = action.payload;
+                    state.bankAccounts[index] = action.payload.data;
                 }
             })
             .addCase(updateExistingBankAccount.rejected, (state, action) => {
@@ -166,5 +162,6 @@ const bankAccountSlice = createSlice({
             });
     },
 });
+
 
 export default bankAccountSlice.reducer;

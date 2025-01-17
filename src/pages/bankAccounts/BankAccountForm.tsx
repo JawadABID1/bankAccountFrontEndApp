@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from "../../app/hooks.ts";
-import { useNavigate, useParams } from 'react-router-dom';
-import { RootState } from "../../types/redux";
+import {Link, useNavigate, useParams} from 'react-router-dom';
+import  {RootState} from "../../app/store.ts";
 import {
     createNewBankAccount,
     getBankAccountById,
@@ -142,9 +142,12 @@ const BankAccountForm: React.FC<BankAccountFormProps> = ({ initialData }) => {
                             </Form.Control>
                         </Form.Group>
 
-                        <Button variant="primary" type="submit" className="mt-3">
+                        <Button variant="primary" type="submit" className="mt-3 m-3">
                             {id ? 'Update Account' : 'Create Account'}
                         </Button>
+                        <Link to="/accounts" className="btn btn-primary mt-3 m-3">
+                            Back to list
+                        </Link>
                     </Form>
                 </Col>
             </Row>

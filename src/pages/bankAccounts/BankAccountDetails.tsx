@@ -1,16 +1,33 @@
 import React from 'react';
-import {Link, useParams} from 'react-router-dom';  // For routing
+import {Link, useNavigate, useParams} from 'react-router-dom';  // For routing
 import { useSelector } from 'react-redux';  // For accessing Redux state
-import {RootState} from "../../types/redux";
-import { Container, Row, Col, Card, Button } from 'react-bootstrap';  // Import Bootstrap components
+import  {RootState} from "../../app/store.ts";
+import { Container, Row, Col, Card, Button } from 'react-bootstrap';
+import {useAppDispatch} from "../../app/hooks.ts";
+import {deleteBankAccount} from "../../app/slices/bankAccountSlice.ts";  // Import Bootstrap components
 
 // Assuming you have a selector to get bank account by ID
 const BankAccountDetails: React.FC = () => {
     const { id } = useParams<{ id: string }>();  // Get the account ID from the URL params
     const bankAccounts = useSelector((state: RootState) => state.bankAccount.bankAccounts);  // Get bank accounts from Redux state
-
+    const dispatch = useAppDispatch();
+    const navigate = useNavigate()
     // Find the bank account details by ID
     const bankAccount = bankAccounts.find((account) => account.accountId === id);
+
+    const deleteAccount = ()=>{
+        if (window.confirm("Are you sure to delete this BankAccount?")) {
+            dispatch(deleteBankAccount(id))
+                .then(()=>{
+                    navigate("/accounts")
+                })
+                .catch((err)=>{
+                    console.error("Failed to delete BankAccount", err.message);
+                    alert("Error deleting bankAccount, please try again");
+
+                });
+        }
+    }
 
     if (!bankAccount) {
         return (
@@ -45,13 +62,13 @@ const BankAccountDetails: React.FC = () => {
                                 </Col>
                             </Row>
                             <div className="d-flex justify-content-end">
-                                <Link className='m-2' to={`/customers/edit/${bankAccount.accountId}`}>
+                                <Link className='m-2' to={`/accounts/edit/${bankAccount.accountId}`}>
                                     <Button variant="warning" size="sm" className="mr-2">
                                         <i className="bi bi-pencil-square"></i>
                                     </Button>
                                 </Link>
                                 {/*<Link className='m-2' to={`/customers/edit/${customer.id}`}>*/}
-                                <Button className='m-2' variant="danger" size="sm">
+                                <Button onClick={deleteAccount} className='m-2' variant="danger" size="sm">
                                     <i className="bi bi-trash"></i>
                                 </Button>
                                 {/*</Link>*/}

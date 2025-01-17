@@ -44,6 +44,7 @@ const AppRoutes: React.FC = () => {
             <Route path="/accounts/:id" element={<BankAccountDetails />} />
             <Route path="/accounts/create" element={<BankAccountForm />} />
             <Route path="/accounts/edit/:id" element={<BankAccountForm />} />
+            < Route path="/dashboard" element={<DashboardPage />}/>
 
             {/*/!* Private routes (accessible only if authenticated) *!/*/}
             {/*<Route path="/dashboard" element={<PrivateRoute><DashboardPage /></PrivateRoute>} />*/}

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';  // For Redux actions and state
 import {useParams, useNavigate, Link} from 'react-router-dom';  // For routing and params
-import {RootState} from "../../types/redux";
+import  {RootState} from "../../app/store.ts";
 // import { createCustomer, fetchCustomerDetails, updateCustomer } from '../app/slices/customerSlice';  // Assuming these actions exist
 import {addCustomer, modifyCustomer, getCustomerById} from "../../app/slices/customerSlice.ts";
 import { Container, Row, Col, Button, Form, Spinner, Alert } from 'react-bootstrap';
@@ -21,8 +21,8 @@ const CustomerForm: React.FC = () => {
 
     // Redux state for loading and error
     const customer = useSelector((state: RootState) => state.customer.selectedCustomer);
-    const customerStatus = useSelector((state: RootState) => state.customer.status);
-    const customerError = useSelector((state: RootState) => state.customer.error);
+    const status = useSelector((state: RootState) => state.customer.status);
+    const error = useSelector((state: RootState) => state.customer.error);
 
     // Fetch customer details if editing
     useEffect(() => {
@@ -74,14 +74,14 @@ const CustomerForm: React.FC = () => {
                 <Col md={8}>
                     <h3>{id ? 'Edit Customer' : 'Create Customer'}</h3>
 
-                    {customerStatus === 'loading' && (
+                    {status === 'pending' && (
                         <div className="text-center">
                             <Spinner animation="border" />
                             <p>Loading customer details...</p>
                         </div>
                     )}
 
-                    {customerStatus === 'failed' && <Alert variant="danger">{customerError}</Alert>}
+                    {status === 'failed' && <Alert variant="danger">{error}</Alert>}
 
                     {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
 

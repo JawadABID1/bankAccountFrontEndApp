@@ -1,26 +1,38 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { RootState } from "../../types/redux";
+import  {RootState} from "../../app/store.ts";
 import { getAllBankAccounts, deleteBankAccount } from '../../app/slices/bankAccountSlice';
-import { Container, Row, Col, Table, Button, Spinner, Alert } from 'react-bootstrap';
+import { Container, Row, Col, Table, Spinner, Alert } from 'react-bootstrap';
 // import { format } from 'date-fns';
 import {formatDate} from "../../utils/formatDate.ts";
+import {getAllCustomers} from "../../app/slices/customerSlice.ts";
 
 const AccountsPage: React.FC = () => {
     const dispatch = useDispatch();
     const bankAccounts = useSelector((state: RootState) => state.bankAccount.bankAccounts);
     const status = useSelector((state: RootState) => state.bankAccount.status);
     const error = useSelector((state: RootState) => state.bankAccount.error);
-    const { customers } = useSelector((state: RootState) => state.customer);
+    const customers = useSelector((state: RootState) => state.customer.customers);
 
     useEffect(() => {
+        if (!customers.length){
+            dispatch(getAllCustomers())
+        }
         dispatch(getAllBankAccounts());
     }, [dispatch]);
 
     const handleDelete = (id: string) => {
         if (window.confirm('Are you sure you want to delete this account?')) {
-            dispatch(deleteBankAccount(id));
+            dispatch(deleteBankAccount(id))
+                .then(() => {
+                    dispatch(getAllBankAccounts());
+                })
+                .catch((err) => {
+                    console.error("Failed to delte bank account ", err.message);
+                    alert('Error deleting bank account try again.');
+
+                });
         }
     };
 
@@ -37,7 +49,7 @@ const AccountsPage: React.FC = () => {
             <Row className="justify-content-center mt-5">
                 <Col md={10}>
                     <h3>Bank Accounts</h3>
-                    {status === 'loading' && (
+                    {status === 'pending' && (
                         <div className="text-center">
                             <Spinner animation="border" />
                             <p>Loading bank accounts...</p>

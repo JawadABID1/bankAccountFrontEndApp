@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';  // For Redux actions and state
 import {useParams, Link, useNavigate} from 'react-router-dom';  // For routing and params
-import { RootState } from '../app/store';
+import  {RootState} from "../../app/store.ts";
 import {getCustomerById, removeCustomer} from "../../app/slices/customerSlice.ts";
 import { Container, Row, Col, Button, Spinner, Card } from 'react-bootstrap';  // Bootstrap components
 
@@ -21,14 +21,16 @@ const CustomerDetails: React.FC = () => {
     }, [dispatch, id]);
 
     const deleteCustomer = () => {
-        dispatch(removeCustomer(id))
-            .then(() => {
-                navigate('/customers'); // Redirect to the customers list on success
-            })
-            .catch((err) => {
-                console.error('Failed to delete customer:', err.message);
-                alert('Error deleting customer. Please try again.');
-            });
+        if (window.confirm("Are you sur to delete this customer?")) {
+            dispatch(removeCustomer(id))
+                .then(() => {
+                    navigate('/customers'); // Redirect to the customers list on success
+                })
+                .catch((err) => {
+                    console.error('Failed to delete customer:', err.message);
+                    alert('Error deleting customer. Please try again.');
+                });
+        }
     };
 
     return (
@@ -36,7 +38,7 @@ const CustomerDetails: React.FC = () => {
             <Row className="justify-content-center mt-5">
                 <Col md={8}>
                     <h3>Customer Details</h3>
-                    {status === 'loading' && (
+                    {status === 'pending' && (
                         <div className="text-center">
                             <Spinner animation="border" />
                             <p>Loading customer details...</p>

@@ -1,29 +1,27 @@
-import {createAsyncThunk, createSelector, createSlice} from '@reduxjs/toolkit';
-import {
-    fetchCustomers,
-    fetchCustomerById,
-    createCustomer,
-    updateCustomer,
-    deleteCustomer,
-} from '../../api/customerApi';
-import {CustomerState, RootState} from "../../types/redux";
-import {Customer, CustomerCreateRequest, CustomerUpdateRequest} from "../../types/customer";
+import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit';
+import { CustomerState } from "../../types/customer";
+import { Customer, CustomerCreateRequest, CustomerUpdateRequest } from "../../types/customer";
+import { RootState } from "../store.ts";
+import customerApi from "../../api/customerAPI.ts";
 
-const initialState : CustomerState = {
+const initialState: CustomerState = {
     customers: [],
     selectedCustomer: null,
     status: 'idle',
     error: null,
 };
 
+// Helper for error handling
+const handleError = (error: any) => error.response?.data || error.message || 'An unexpected error occurred.';
+
 // Thunks
 export const getAllCustomers = createAsyncThunk(
     'customers/fetchAll',
     async (_, { rejectWithValue }) => {
         try {
-            return await fetchCustomers();
+            return await customerApi.fetchCustomers();
         } catch (error: any) {
-            return rejectWithValue(error.response.data);
+            return rejectWithValue(handleError(error));
         }
     }
 );
@@ -32,9 +30,9 @@ export const getCustomerById = createAsyncThunk(
     'customers/fetchById',
     async (id: string, { rejectWithValue }) => {
         try {
-            return await fetchCustomerById(id);
+            return await customerApi.fetchCustomerById(id);
         } catch (error: any) {
-            return rejectWithValue(error.response.data);
+            return rejectWithValue(handleError(error));
         }
     }
 );
@@ -43,9 +41,9 @@ export const addCustomer = createAsyncThunk(
     'customers/create',
     async (data: CustomerCreateRequest, { rejectWithValue }) => {
         try {
-            return await createCustomer(data);
+            return await customerApi.createCustomer(data);
         } catch (error: any) {
-            return rejectWithValue(error.response.data);
+            return rejectWithValue(handleError(error));
         }
     }
 );
@@ -53,11 +51,10 @@ export const addCustomer = createAsyncThunk(
 export const modifyCustomer = createAsyncThunk(
     'customers/update',
     async ({ id, data }: { id: string; data: CustomerUpdateRequest }, { rejectWithValue }) => {
-        console.log("modifyCustomerData and Id: " + JSON.stringify(data)+" and " + id);
         try {
-            return await updateCustomer(id, data);
+            return await customerApi.updateCustomer(id, data);
         } catch (error: any) {
-            return rejectWithValue(error.response.data);
+            return rejectWithValue(handleError(error));
         }
     }
 );
@@ -66,9 +63,10 @@ export const removeCustomer = createAsyncThunk(
     'customers/delete',
     async (id: string, { rejectWithValue }) => {
         try {
-            return await deleteCustomer(id);
+            await customerApi.deleteCustomer(id);
+            return id; // Return the ID for easy removal in the reducer
         } catch (error: any) {
-            return rejectWithValue(error.response.data);
+            return rejectWithValue(handleError(error));
         }
     }
 );
@@ -79,66 +77,64 @@ const customerSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder
-            .addCase(getAllCustomers.pending, (state, action) => {
+            .addCase(getAllCustomers.pending, (state) => {
                 state.status = 'pending';
             })
             .addCase(getAllCustomers.fulfilled, (state, action) => {
                 state.status = 'succeeded';
-                state.customers = action.payload;
+                state.customers = action.payload.data;
             })
             .addCase(getAllCustomers.rejected, (state, action) => {
-                state.status = "failed";
+                state.status = 'failed';
                 state.error = action.payload;
             })
             .addCase(getCustomerById.pending, (state) => {
-                state.status = "pending";
+                state.status = 'pending';
             })
             .addCase(getCustomerById.fulfilled, (state, action) => {
-                state.status = "succeeded";
-                state.selectedCustomer = action.payload;
+                state.status = 'succeeded';
+                state.selectedCustomer = action.payload.data;
             })
             .addCase(getCustomerById.rejected, (state, action) => {
-                state.status = "failed";
+                state.status = 'failed';
                 state.error = action.payload;
             })
             .addCase(addCustomer.fulfilled, (state, action) => {
-                state.customers.push(action.payload);
+                state.customers.push(action.payload.data);
             })
             .addCase(modifyCustomer.fulfilled, (state, action) => {
-                const index = state.customers.findIndex(customer => customer.id === action.payload.id);
-                if (index !== -1) {
-                    state.customers[index] = action.payload;
-                }
+                state.customers = state.customers.map(customer =>
+                    customer.id === action.payload.id ? action.payload : customer
+                );
             })
             .addCase(removeCustomer.fulfilled, (state, action) => {
-                state.customers = state.customers.filter(customer => customer.id !== action.payload.id);
+                state.customers = state.customers.filter(customer => customer.id !== action.payload);
+            })
+            .addCase(removeCustomer.rejected, (state, action) => {
+                state.error = action.payload;
             });
     },
 });
 
-// // Selector to get all customers
-// export const selectAllCustomer = (state: RootState) => state.customer.customers;
-//
-//
-// // Memoized selector to get customer full name by Id
-// export const getCustomerFullNameById = createSelector(
-//     [selectAllCustomer, (_, id: string) => id],
-//     (customers, id) => {
-//         const customer = customers.find((customer) => customer.id === id);
-//         return customer ? `${customer.firstName} ${customer.lastName}` : 'Unknown Customer';
-//     }
-// );
-//
-//
-//
-// // Memoized selector for dropdown options (ID and FullName
-// export const selectCustomerOptions = createSelector(
-//     [selectAllCustomer], (customers)=>{
-//         customers.map((customer)=>({
-//             id: customer.id,
-//             fullName: `${customer.firstName} ${customer.lastName}`
-//         }))
-//     }
-// )
+
+// Selectors
+export const selectAllCustomers = (state: RootState) => state.customer.customers;
+
+export const getCustomerFullNameById = createSelector(
+    [selectAllCustomers, (_, id: string) => id],
+    (customers, id) => {
+        const customer = customers.find((customer: Customer) => customer.id === id);
+        return customer ? `${customer.firstName} ${customer.lastName}` : 'Unknown Customer';
+    }
+);
+
+export const selectCustomerOptions = createSelector(
+    [selectAllCustomers],
+    (customers) =>
+        customers.map((customer: Customer) => ({
+            id: customer.id,
+            fullName: `${customer.firstName} ${customer.lastName}`,
+        }))
+);
 
 export default customerSlice.reducer;

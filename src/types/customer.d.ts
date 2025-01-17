@@ -1,4 +1,14 @@
-// customer.d.ts
+// Customer slice state
+import {ApiResponse} from "./api";
+
+
+export interface CustomerState{
+    customers: Customer[];
+    status: 'idle' | 'pending' | 'succeeded' | 'failed';
+    error: string | null | unknown;
+    selectedCustomer: Customer | null;
+}
+
 export interface Customer {
     id: string;
     firstName: string;
@@ -24,4 +34,12 @@ export interface CustomerResponse {
 
 export interface CustomerListResponse {
     data: Customer[];
+}
+
+export interface CustomerApi {
+    fetchCustomers: () => Promise<ApiResponse<Customer[]>>;  // Fetch all customers
+    fetchCustomerById: (id: string) => Promise<ApiResponse<CustomerResponse>>;  // Get a single customer by ID
+    createCustomer: (customer: CustomerCreateRequest) => Promise<ApiResponse<CustomerResponse>>;  // Create a new customer
+    updateCustomer: (id: string, customer: CustomerUpdateRequest) => Promise<ApiResponse<CustomerResponse>>;  // Update an existing customer
+    deleteCustomer: (id: string) => Promise<ApiResponse<null>>;  // Delete a customer
 }

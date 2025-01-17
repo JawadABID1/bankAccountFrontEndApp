@@ -1,10 +1,4 @@
-// import { RootState as AppRootState } from './store'; // Import RootState type from store.ts
-//
-// declare module 'react-redux' {
-//     interface DefaultRootState extends AppRootState {}
-// }
-
-// redux.d.ts
+// redux.d.OLD.ts
 import { Customer } from './customer.d'; // Import customer types
 import { User } from './user.d'; // Import user types
 import { BankAccount } from './bankAccount.d'; // Import bank account types
@@ -27,17 +21,16 @@ export interface AuthState {
 // Customer slice state
 export interface CustomerState{
     customers: Customer[];
-    // loading: boolean;
     status: 'idle' | 'pending' | 'succeeded' | 'failed';
-    error: string | null;
-    selectedCustomer: unknown | null;
+    error: string | null | unknown;
+    selectedCustomer: Customer | null;
 }
 
 // User slice state
 export interface UserState {
     users: User[];
     loading: boolean;
-    error: string | null;
+    error: string | null | unknown;
 }
 
 // Bank Account slice state
@@ -45,7 +38,7 @@ export interface BankAccountState {
     bankAccounts: BankAccount[];
     status: 'idle' | 'pending' | 'succeeded' | 'failed';
     error: string | null;
-    selectedAccount: unknown | null;
+    selectedAccount:BankAccount;
 }
 
 // Actions types (for TypeScript safety)

@@ -1,5 +1,9 @@
-// user.d.ts
-
+// User slice state
+export interface UserState {
+    users: User[];
+    loading: boolean;
+    error: string | null | unknown;
+}
 // Define the structure of a User object
 export interface User {
     id: string;

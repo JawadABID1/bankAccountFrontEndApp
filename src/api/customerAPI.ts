@@ -1,37 +1,69 @@
 import { axiosInstance } from './axiosInstance';
-import {CustomerState} from "../types/redux";
-import {CustomerCreateRequest, CustomerUpdateRequest} from "../types/customer";
+import {
+    CustomerCreateRequest,
+    CustomerUpdateRequest,
+    CustomerResponse,
+    CustomerListResponse,
+    CustomerApi,
+} from '../types/customer';
+import { ApiResponse } from '../types/api';
 
-// Fetch all customers
-export const fetchCustomers = async () => {
-    const response = await axiosInstance.get('/CUSTOMER-SERVICE/customers');
-    console.log("response: ", response);
-    return response.data;
+// Implementing the CustomerApi interface
+const customerApi: CustomerApi = {
+    // Fetch all customers
+    fetchCustomers: async (): Promise<ApiResponse<CustomerListResponse>> => {
+        const response = await axiosInstance.get('/CUSTOMER-SERVICE/customers');
+        return {
+            data: response.data,
+            message: response.statusText,
+            status: response.status === 200 ? 'success' : 'error',
+            code: response.status,
+        };
+    },
+
+    // Fetch a customer by ID
+    fetchCustomerById: async (id: string): Promise<ApiResponse<CustomerResponse>> => {
+        const response = await axiosInstance.get(`/CUSTOMER-SERVICE/customers/${id}`);
+        return {
+            data: response.data,
+            message: response.statusText,
+            status: response.status === 200 ? 'success' : 'error',
+            code: response.status,
+        };
+    },
+
+    // Create a new customer
+    createCustomer: async (data: CustomerCreateRequest): Promise<ApiResponse<CustomerResponse>> => {
+        const response = await axiosInstance.post('/CUSTOMER-SERVICE/customers/create', data);
+        return {
+            data: response.data,
+            message: response.statusText,
+            status: response.status === 201 ? 'success' : 'error',
+            code: response.status,
+        };
+    },
+
+    // Update an existing customer
+    updateCustomer: async (id: string, data: CustomerUpdateRequest): Promise<ApiResponse<CustomerResponse>> => {
+        const response = await axiosInstance.put(`/CUSTOMER-SERVICE/customers/${id}`, data);
+        return {
+            data: response.data,
+            message: response.statusText,
+            status: response.status === 200 ? 'success' : 'error',
+            code: response.status,
+        };
+    },
+
+    // Delete a customer
+    deleteCustomer: async (id: string): Promise<ApiResponse<null>> => {
+        const response = await axiosInstance.delete(`/CUSTOMER-SERVICE/customers/${id}`);
+        return {
+            data: null,
+            message: response.statusText,
+            status: response.status === 200 ? 'success' : 'error',
+            code: response.status,
+        };
+    },
 };
 
-// Fetch a customer by ID
-export const fetchCustomerById = async (id: string) => {
-
-    const response = await axiosInstance.get(`/CUSTOMER-SERVICE/customers/${id}`);
-    return response.data;
-};
-
-// Create a new customer
-export const createCustomer = async (data: CustomerCreateRequest) => {
-    const response = await axiosInstance.post('/CUSTOMER-SERVICE/customers/create', data);
-    return response.data;
-};
-
-// Update an existing customer
-export const updateCustomer = async (id: string, data: CustomerUpdateRequest) => {
-
-    console.log("data: " + data);
-    const response = await axiosInstance.put(`/CUSTOMER-SERVICE/customers/${id}`, data);
-    return response.data;
-};
-
-// Delete a customer
-export const deleteCustomer = async (id: string) => {
-    const response = await axiosInstance.delete(`/CUSTOMER-SERVICE/customers/${id}`);
-    return response.data;
-};
+export default customerApi;

@@ -1,6 +1,3 @@
-// api.d.ts
-
-// User Type Definitions
 export interface User {
     id: string;
     name: string;
@@ -57,8 +54,8 @@ export interface UserApi {
 }
 
 export interface CustomerApi {
-    getAllCustomers: () => Promise<ApiResponse<Customer[]>>;  // Fetch all customers
-    getCustomerById: (id: string) => Promise<ApiResponse<Customer>>;  // Get a single customer by ID
+    fetchCustomers: () => Promise<ApiResponse<Customer[]>>;  // Fetch all customers
+    fetchCustomerById: (id: string) => Promise<ApiResponse<Customer>>;  // Get a single customer by ID
     createCustomer: (customer: Customer) => Promise<ApiResponse<Customer>>;  // Create a new customer
     updateCustomer: (id: string, customer: Customer) => Promise<ApiResponse<Customer>>;  // Update an existing customer
     deleteCustomer: (id: string) => Promise<ApiResponse<null>>;  // Delete a customer

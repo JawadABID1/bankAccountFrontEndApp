@@ -1,13 +1,12 @@
 import React, { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from "../../app/hooks.ts";
 import { getAllCustomers, removeCustomer } from '../../app/slices/customerSlice.ts';
-import { RootState } from "../../app/store.ts";
+import  {RootState} from "../../app/store.ts";
 import { Container, Row, Col, Table, Spinner, Alert, Button } from 'react-bootstrap';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link} from 'react-router-dom';
 
 const CustomersPage: React.FC = () => {
     const dispatch = useAppDispatch();
-    const navigate = useNavigate();
 
     const { customers, status, error } = useAppSelector((state: RootState) => state.customer);
 
@@ -18,14 +17,16 @@ const CustomersPage: React.FC = () => {
 
 
     const deleteCustomer = (id: string) => {
-        dispatch(removeCustomer(id))
-            .then(() => {
-                dispatch(getAllCustomers());
-            })
-            .catch((err) => {
-                console.error('Failed to delete customer:', err.message);
-                alert('Error deleting customer. Please try again.');
-            });
+        if (window.confirm('Are you sur to delete this customer?')){
+            dispatch(removeCustomer(id))
+                .then(() => {
+                    dispatch(getAllCustomers());
+                })
+                .catch((err) => {
+                    console.error('Failed to delete customer:', err.message);
+                    alert('Error deleting customer. Please try again.');
+                });
+        }
     };
 
     return (
@@ -35,7 +36,7 @@ const CustomersPage: React.FC = () => {
                     <h3>Customers</h3>
 
                     {/* Loading spinner */}
-                    {status === 'loading' && (
+                    {status === 'pending' && (
                         <div className="text-center">
                             <Spinner animation="border" />
                             <p>Loading customers...</p>

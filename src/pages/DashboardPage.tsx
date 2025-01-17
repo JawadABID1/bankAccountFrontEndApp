@@ -11,13 +11,13 @@ const DashboardPage: React.FC = () => {
     const dispatch = useDispatch();
 
     // Redux state for users, bank accounts, and customers
-    const { users, status: usersStatus, error: usersError } = useSelector((state: RootState) => state.user);
+    // const { users, status: usersStatus, error: usersError } = useSelector((state: RootState) => state.user);
     const { bankAccounts, status: bankAccountsStatus, error: bankAccountsError } = useSelector((state: RootState) => state.bankAccount);
     const { customers, status: customersStatus, error: customersError } = useSelector((state: RootState) => state.customer);
 
     // Fetch data when the component mounts
     useEffect(() => {
-        dispatch(getAllUsers());
+        // dispatch(getAllUsers());
         dispatch(getAllBankAccounts());
         dispatch(getAllCustomers());
     }, [dispatch]);
@@ -25,33 +25,33 @@ const DashboardPage: React.FC = () => {
     return (
         <Container className="mt-5">
             <Row>
-                <Col md={4}>
-                    <Card>
-                        <Card.Body>
-                            <Card.Title>Users</Card.Title>
-                            {usersStatus === 'loading' && (
-                                <div className="text-center">
-                                    <Spinner animation="border" />
-                                    <p>Loading users...</p>
-                                </div>
-                            )}
-                            {usersStatus === 'failed' && <Alert variant="danger">{usersError}</Alert>}
-                            {usersStatus === 'succeeded' && (
-                                <>
-                                    <h4>{users.length}</h4>
-                                    <p>Total Users</p>
-                                    <Button variant="primary" href="/users">Manage Users</Button>
-                                </>
-                            )}
-                        </Card.Body>
-                    </Card>
-                </Col>
+                {/*<Col md={4}>*/}
+                {/*    <Card>*/}
+                {/*        <Card.Body>*/}
+                {/*            <Card.Title>Users</Card.Title>*/}
+                {/*            {usersStatus === 'loading' && (*/}
+                {/*                <div className="text-center">*/}
+                {/*                    <Spinner animation="border" />*/}
+                {/*                    <p>Loading users...</p>*/}
+                {/*                </div>*/}
+                {/*            )}*/}
+                {/*            {usersStatus === 'failed' && <Alert variant="danger">{usersError}</Alert>}*/}
+                {/*            {usersStatus === 'succeeded' && (*/}
+                {/*                <>*/}
+                {/*                    <h4>{users.length}</h4>*/}
+                {/*                    <p>Total Users</p>*/}
+                {/*                    <Button variant="primary" href="/users">Manage Users</Button>*/}
+                {/*                </>*/}
+                {/*            )}*/}
+                {/*        </Card.Body>*/}
+                {/*    </Card>*/}
+                {/*</Col>*/}
 
                 <Col md={4}>
                     <Card>
                         <Card.Body>
                             <Card.Title>Bank Accounts</Card.Title>
-                            {bankAccountsStatus === 'loading' && (
+                            {bankAccountsStatus === 'pending' && (
                                 <div className="text-center">
                                     <Spinner animation="border" />
                                     <p>Loading bank accounts...</p>
@@ -62,7 +62,7 @@ const DashboardPage: React.FC = () => {
                                 <>
                                     <h4>{bankAccounts.length}</h4>
                                     <p>Total Bank Accounts</p>
-                                    <Button variant="primary" href="/bank-accounts">Manage Accounts</Button>
+                                    <Button variant="primary" href="/accounts">Manage Accounts</Button>
                                 </>
                             )}
                         </Card.Body>
@@ -73,7 +73,7 @@ const DashboardPage: React.FC = () => {
                     <Card>
                         <Card.Body>
                             <Card.Title>Customers</Card.Title>
-                            {customersStatus === 'loading' && (
+                            {customersStatus === 'pending' && (
                                 <div className="text-center">
                                     <Spinner animation="border" />
                                     <p>Loading customers...</p>
