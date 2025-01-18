@@ -1,11 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';  // For routing links
-import { useAppSelector } from '../app/hooks';  // For accessing Redux state
-import { RootState } from '../app/store';
+// import { useAppSelector } from '../app/hooks';  // For accessing Redux state
+// import { RootState } from '../app/store';
 
 const Header: React.FC = () => {
     // Access the authenticated user information from Redux
-    const user = useAppSelector((state: RootState) => state.auth.user);
+    // const user = useAppSelector((state: RootState) => state.auth.user);
 
     return (
         <header className="bg-dark text-white py-3">
@@ -28,7 +28,7 @@ const Header: React.FC = () => {
 
                         <li className="nav-item">
                             <Link to="/customers" className="nav-link text-white">
-                                Bank Accounts
+                                Customers
                             </Link>
                         </li>
                         <li className="nav-item">
@@ -36,19 +36,19 @@ const Header: React.FC = () => {
                                 Dashboard
                             </Link>
                         </li>
-                        {user ? (
+                        {/*{user ? (*/}
+                        {/*    <li className="nav-item">*/}
+                        {/*        <span className="nav-link text-white">*/}
+                        {/*            Welcome, {user.name}*/}
+                        {/*        </span>*/}
+                        {/*    </li>*/}
+                        {/*) : (*/}
                             <li className="nav-item">
-                                <span className="nav-link text-white">
-                                    Welcome, {user.name}
-                                </span>
-                            </li>
-                        ) : (
-                            <li className="nav-item">
-                                <Link to="/login" className="nav-link text-white">
+                                <Link to="#" className="nav-link text-white">
                                     Login
                                 </Link>
                             </li>
-                        )}
+                        {/*)}*/}
                     </ul>
                 </nav>
             </div>

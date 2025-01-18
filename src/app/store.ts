@@ -1,14 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit';
-import authReducer from './slices/authSlice';
-import userReducer from './slices/userSlice';
+// import authReducer from './slices/authSlice';
+// import userReducer from './slices/userSlice';
 import bankAccountReducer from './slices/bankAccountSlice';
 import customerReducer from './slices/customerSlice';
 
 // Create the store and add reducers
 const store = configureStore({
     reducer: {
-        auth: authReducer,
-        user: userReducer,
+        // auth: authReducer,
+        // user: userReducer,
         bankAccount: bankAccountReducer,
         customer: customerReducer, // Add the customer reducer if applicable
     },

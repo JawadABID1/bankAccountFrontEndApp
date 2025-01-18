@@ -1,19 +1,17 @@
 import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';  // For Redux actions and state
-import { getAllUsers } from '../app/slices/userSlice';  // Redux action for fetching users
 import { getAllBankAccounts } from '../app/slices/bankAccountSlice';  // Redux action for fetching bank accounts
-// import {fetchBankAccounts} from "../api/bankAccountApi.ts";
 import { getAllCustomers } from '../app/slices/customerSlice';  // Redux action for fetching customers
 import { RootState } from '../app/store';  // RootState for accessing Redux state
-import { Container, Row, Col, Card, Spinner, Alert, Button } from 'react-bootstrap';  // Bootstrap components
+import { Container, Row, Col, Card, Spinner, Alert, Button } from 'react-bootstrap';
+import {useAppDispatch, useAppSelector} from "../app/hooks.ts";  // Bootstrap components
 
 const DashboardPage: React.FC = () => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
     // Redux state for users, bank accounts, and customers
     // const { users, status: usersStatus, error: usersError } = useSelector((state: RootState) => state.user);
-    const { bankAccounts, status: bankAccountsStatus, error: bankAccountsError } = useSelector((state: RootState) => state.bankAccount);
-    const { customers, status: customersStatus, error: customersError } = useSelector((state: RootState) => state.customer);
+    const { bankAccounts, status: bankAccountsStatus, error: bankAccountsError } = useAppSelector((state: RootState) => state.bankAccount);
+    const { customers, status: customersStatus, error: customersError } = useAppSelector((state: RootState) => state.customer);
 
     // Fetch data when the component mounts
     useEffect(() => {

@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';  // For Redux actions and state
 import {useParams, useNavigate, Link} from 'react-router-dom';  // For routing and params
 import  {RootState} from "../../app/store.ts";
 // import { createCustomer, fetchCustomerDetails, updateCustomer } from '../app/slices/customerSlice';  // Assuming these actions exist
 import {addCustomer, modifyCustomer, getCustomerById} from "../../app/slices/customerSlice.ts";
 import { Container, Row, Col, Button, Form, Spinner, Alert } from 'react-bootstrap';
-import {CustomerUpdateRequest} from "../../types/customer";  // Bootstrap components
+// import {CustomerCreateRequest, CustomerUpdateRequest} from "../../types/customer";
+import {useAppDispatch, useAppSelector} from "../../app/hooks.ts";  // Bootstrap components
 
 const CustomerForm: React.FC = () => {
     const { id } = useParams<{ id: string }>();  // Get the customer ID from the URL params (for editing)
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const navigate = useNavigate();
 
     // States to manage form inputs
@@ -20,9 +20,9 @@ const CustomerForm: React.FC = () => {
 
 
     // Redux state for loading and error
-    const customer = useSelector((state: RootState) => state.customer.selectedCustomer);
-    const status = useSelector((state: RootState) => state.customer.status);
-    const error = useSelector((state: RootState) => state.customer.error);
+    const customer = useAppSelector((state: RootState) => state.customer.selectedCustomer);
+    const status = useAppSelector((state: RootState) => state.customer.status);
+    const error = useAppSelector((state: RootState) => state.customer.error);
 
     // Fetch customer details if editing
     useEffect(() => {
@@ -50,7 +50,7 @@ const CustomerForm: React.FC = () => {
             return;
         }
 
-        const customerData: CustomerUpdateRequest = { firstName, lastName, email};
+        const customerData = { firstName, lastName, email};
         console.log("customerData: " + JSON.stringify(customerData));
         // Dispatch action based on whether we're creating or updating
         if (id) {

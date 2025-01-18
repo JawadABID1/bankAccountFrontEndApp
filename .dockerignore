@@ -1,0 +1,29 @@
+# Node.js related files
+node_modules
+npm-debug.log
+yarn-error.log
+
+# Build directories (e.g., for React/Vite)
+dist
+build
+
+# IDE related files
+.vscode
+.idea
+*.sublime-workspace
+*.sublime-project
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Environment configuration files (optional)
+.env
+.env.local
+.env.production
+
+# Log files
+*.log
+
+# Other files you don't need in the Docker image
+*.md

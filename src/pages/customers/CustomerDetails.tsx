@@ -1,17 +1,17 @@
 import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';  // For Redux actions and state
 import {useParams, Link, useNavigate} from 'react-router-dom';  // For routing and params
 import  {RootState} from "../../app/store.ts";
 import {getCustomerById, removeCustomer} from "../../app/slices/customerSlice.ts";
-import { Container, Row, Col, Button, Spinner, Card } from 'react-bootstrap';  // Bootstrap components
+import { Container, Row, Col, Button, Spinner, Card } from 'react-bootstrap';
+import {useAppDispatch, useAppSelector} from "../../app/hooks.ts";  // Bootstrap components
 
 const CustomerDetails: React.FC = () => {
-    const { id } = useParams<{ id: string }>();  // Get the customer ID from the URL params
-    const dispatch = useDispatch();
-    const customer = useSelector((state: RootState) => state.customer.selectedCustomer);
+    const { id } = useParams<{ id?: string }>();  // Get the customer ID from the URL params
+    const dispatch = useAppDispatch()
+    const customer = useAppSelector((state: RootState) => state.customer.selectedCustomer);
     console.log("customer: ", customer);
-    const status = useSelector((state: RootState) => state.customer.status);
-    const error = useSelector((state: RootState) => state.customer.error);
+    const status = useAppSelector((state: RootState) => state.customer.status);
+    const error = useAppSelector((state: RootState) => state.customer.error);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -22,14 +22,16 @@ const CustomerDetails: React.FC = () => {
 
     const deleteCustomer = () => {
         if (window.confirm("Are you sur to delete this customer?")) {
-            dispatch(removeCustomer(id))
-                .then(() => {
-                    navigate('/customers'); // Redirect to the customers list on success
-                })
-                .catch((err) => {
-                    console.error('Failed to delete customer:', err.message);
-                    alert('Error deleting customer. Please try again.');
-                });
+            if (id) {
+                dispatch(removeCustomer(id))
+                    .then(() => {
+                        navigate('/customers'); // Redirect to the customers list on success
+                    })
+                    .catch((err) => {
+                        console.error('Failed to delete customer:', err.message);
+                        alert('Error deleting customer. Please try again.');
+                    });
+            }
         }
     };
 

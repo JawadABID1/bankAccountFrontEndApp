@@ -9,6 +9,7 @@ import {
 } from "../../app/slices/bankAccountSlice.ts";
 import { getAllCustomers } from "../../app/slices/customerSlice.ts";  // Assuming this action exists
 import { Container, Row, Col, Form, Button, Alert } from 'react-bootstrap';
+import {BankAccountCreateRequest, BankAccountUpdateRequest} from "../../types/bankAccount";
 
 interface BankAccountFormProps {
     initialData?: {
@@ -16,7 +17,7 @@ interface BankAccountFormProps {
         currency: string;
         accountType: string;
         balance: number;
-        customerId: number;
+        customerId: string;
     };
 }
 
@@ -29,12 +30,11 @@ const BankAccountForm: React.FC<BankAccountFormProps> = ({ initialData }) => {
     const [balance, setAccountBalance] = useState(initialData?.balance || 0);
     const [currency, setAccountCurrency] = useState(initialData?.currency || '');
     const [accountType, setAccountType] = useState(initialData?.accountType || '');
-    const [customerId, setCustomerId] = useState(initialData?.customerId || 0);
+    const [customerId, setCustomerId] = useState(initialData?.customerId || '');
     const [error, setError] = useState<string | null>(null);
 
     // Fetch customers
     const customers = useAppSelector((state: RootState) => state.customer.customers);
-    const bankAccountStatus = useAppSelector((state: RootState) => state.bankAccount.status);
     const bankAccount = useAppSelector((state: RootState) => state.bankAccount.selectedAccount);
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -48,11 +48,11 @@ const BankAccountForm: React.FC<BankAccountFormProps> = ({ initialData }) => {
 
 
         if (id) {
-            const bankAccountData = { balance, currency, accountType, customerId };
+            const bankAccountData: BankAccountUpdateRequest = { balance, currency, accountType, customerId };
             dispatch(updateExistingBankAccount({ id, data: bankAccountData }));
             console.log('bankAccountData: ', JSON.stringify(bankAccountData));
         } else {
-            const bankAccountData = { accountId, balance, currency, accountType, customerId };
+            const bankAccountData: BankAccountCreateRequest = { accountId, balance, currency, accountType, customerId };
             dispatch(createNewBankAccount(bankAccountData));
         }
 
@@ -97,10 +97,10 @@ const BankAccountForm: React.FC<BankAccountFormProps> = ({ initialData }) => {
                         <Form.Group controlId="formAccountBalance">
                             <Form.Label>Balance</Form.Label>
                             <Form.Control
-                                type="text"
+                                type="numbre"
                                 placeholder="Enter account Balance"
                                 value={balance}
-                                onChange={(e) => setAccountBalance(e.target.value)}
+                                onChange={(e) => setAccountBalance(Number(e.target.value))}
                             />
                         </Form.Group>
 

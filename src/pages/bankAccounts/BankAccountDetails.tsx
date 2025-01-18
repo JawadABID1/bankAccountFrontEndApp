@@ -8,7 +8,7 @@ import {deleteBankAccount} from "../../app/slices/bankAccountSlice.ts";  // Impo
 
 // Assuming you have a selector to get bank account by ID
 const BankAccountDetails: React.FC = () => {
-    const { id } = useParams<{ id: string }>();  // Get the account ID from the URL params
+    const { id } = useParams<{ id?: string }>();  // Get the account ID from the URL params
     const bankAccounts = useSelector((state: RootState) => state.bankAccount.bankAccounts);  // Get bank accounts from Redux state
     const dispatch = useAppDispatch();
     const navigate = useNavigate()
@@ -17,15 +17,17 @@ const BankAccountDetails: React.FC = () => {
 
     const deleteAccount = ()=>{
         if (window.confirm("Are you sure to delete this BankAccount?")) {
-            dispatch(deleteBankAccount(id))
-                .then(()=>{
-                    navigate("/accounts")
-                })
-                .catch((err)=>{
-                    console.error("Failed to delete BankAccount", err.message);
-                    alert("Error deleting bankAccount, please try again");
+            if (id){
+                dispatch(deleteBankAccount(id))
+                    .then(() => {
+                        navigate("/accounts")
+                    })
+                    .catch((err) => {
+                        console.error("Failed to delete BankAccount", err.message);
+                        alert("Error deleting bankAccount, please try again");
 
-                });
+                    });
+            }
         }
     }
 

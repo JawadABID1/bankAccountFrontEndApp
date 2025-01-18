@@ -2,7 +2,7 @@
 export interface BankAccountState {
     bankAccounts: BankAccount[];
     status: 'idle' | 'pending' | 'succeeded' | 'failed';
-    error: string | null;
+    error: string | null ;
     selectedAccount:BankAccount | null;
 }
 
@@ -14,10 +14,11 @@ export interface BankAccount {
     customerId: string; // Assuming each account is linked to a customer
     createDate: string;
     updatedDate: string;
+    customer: {id: number; firstName: string; lastName: string; email: string};
 }
 
 export interface BankAccountCreateRequest {
-    id: string;
+    accountId: string;
     accountType: string;
     balance: number;
     currency: string;

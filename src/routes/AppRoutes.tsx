@@ -2,20 +2,20 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';  // Removed BrowserRouter import
 import HomePage from "../pages/HomePage.tsx";
 import DashboardPage from '../pages/DashboardPage';
-import UsersPage from '../pages/UsersPage';
-import CreateUserPage from '../features/users/CreateUserPage.tsx';
-import UserDetails from "../features/users/UserDetails.tsx";
+// import UsersPage from '../pages/UsersPage';
+// import CreateUserPage from '../features/users/CreateUserPage.tsx';
+// import UserDetails from "../features/users/UserDetails.tsx";
 import CustomersPage from '../pages/customers/CustomersPage.tsx';
-import CreateCustomerPage from '../pages/customers/CreateCustomerPage.tsx';
+// import CreateCustomerPage from '../pages/customers/CreateCustomerPage.tsx';
 import CustomerDetails from '../pages/customers/CustomerDetails';
-import BankAccountList from "../features/bankAccounts/BankAccountList.tsx";
-import CreateAccountPage from '../features/bankAccounts/CreateAccountPage.tsx';
+// import BankAccountList from "../features/bankAccounts/BankAccountList.tsx";
+// import CreateAccountPage from '../features/bankAccounts/CreateAccountPage.tsx';
 import NotFoundPage from '../pages/NotFoundPage';
-import LoginForm from "../pages/auth/LoginForm.tsx";
-import RegisterForm from '../pages/auth/RegisterForm';
+// import LoginForm from "../pages/auth/LoginForm.tsx";
+// import RegisterForm from '../pages/auth/RegisterForm';
 
 // Import PrivateRoute for protected routes
-import PrivateRoute from "../components/PrivateRoute.tsx";
+// import PrivateRoute from "../components/PrivateRoute.tsx";
 import CustomerForm from "../pages/customers/CustomerForm.tsx";
 import BankAccountDetails from "../pages/bankAccounts/BankAccountDetails.tsx";
 import BankAccountForm from "../pages/bankAccounts/BankAccountForm.tsx";
@@ -30,8 +30,8 @@ const AppRoutes: React.FC = () => {
             {/* Public routes (accessible without login) */}
 
             {/*Routing for auth*/}
-            <Route path="/login" element={<LoginForm />} />
-            <Route path="/register" element={<RegisterForm />} />
+            {/*<Route path="/login" element={<LoginForm />} />*/}
+            {/*<Route path="/register" element={<RegisterForm />} />*/}
 
              {/*routing for customer*/}
              <Route path="/customers" element={<CustomersPage />} />
