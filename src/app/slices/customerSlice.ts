@@ -27,7 +27,7 @@ const handleError = (error: unknown): string => {
 
 // Fetch all customers
 export const getAllCustomers = createAsyncThunk(
-    'bankAccounts/fetchAll',
+    'customers/fetchAll',
     async (_, { rejectWithValue }) => {
         try {
             return await customerApi.fetchCustomers();
@@ -39,7 +39,7 @@ export const getAllCustomers = createAsyncThunk(
 
 // Fetch a single customer by ID
 export const getCustomerById = createAsyncThunk(
-    'bankAccounts/fetchById',
+    'customers/fetchById',
     async (id: string, { rejectWithValue }) => {
         try {
             return await customerApi.fetchCustomerById(id);
@@ -51,7 +51,7 @@ export const getCustomerById = createAsyncThunk(
 
 // Create a new customer
 export const addCustomer = createAsyncThunk(
-    'bankAccounts/create',
+    'customers/create',
     async (data: CustomerCreateRequest, { rejectWithValue }) => {
         try {
             return await customerApi.createCustomer(data);
@@ -63,7 +63,7 @@ export const addCustomer = createAsyncThunk(
 
 // Update an existing customer
 export const modifyCustomer = createAsyncThunk(
-    'bankAccounts/update',
+    'customers/update',
     async (
         { id, data }: { id: string; data: CustomerUpdateRequest },
         { rejectWithValue }
@@ -78,7 +78,7 @@ export const modifyCustomer = createAsyncThunk(
 
 // Delete a customer
 export const removeCustomer = createAsyncThunk(
-    'bankAccounts/delete',
+    'customers/delete',
     async (id: string, { rejectWithValue }) => {
         try {
             await customerApi.deleteCustomer(id);
@@ -91,7 +91,7 @@ export const removeCustomer = createAsyncThunk(
 
 // Slice
 const customerSlice = createSlice({
-    name: 'bankAccounts',
+    name: 'customers',
     initialState,
     reducers: {},
     extraReducers: (builder) => {
